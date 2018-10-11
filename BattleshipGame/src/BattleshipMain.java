@@ -36,7 +36,7 @@ public class BattleshipMain {
             case "prob":
                 return new ProbabilisticGuessPlayer();
             case "sample":
-//                return new SampleRandomGuessPlayer();
+                return new SampleRandomGuessPlayer();
             default:
                 return null;
         }

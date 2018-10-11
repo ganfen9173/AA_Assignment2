@@ -14,8 +14,8 @@ import world.World;
  */
 public class GreedyGuessPlayer  implements Player{
 	static final int numShips = 5;
-	static final int maxLen = 4;
-	static final int maxWid = 2;
+//	static final int maxLen = 4;
+//	static final int maxWid = 2;
 //	static final int[] rowDeltas = { 1, 0, -1, 0, 1, 0, -1, 0 };
 //	static final int[] clnDeltas = { 0, -1, 0, 1, 1, 0, -1, 0 };
 	int rowSize = 0;
@@ -23,6 +23,7 @@ public class GreedyGuessPlayer  implements Player{
 	boolean isHex = false;
 	
 	List<Guess> guessList = new ArrayList<Guess>();
+	
 	int mode = 0;
 	
 	private class OwnShip{
@@ -100,10 +101,24 @@ public class GreedyGuessPlayer  implements Player{
     	int turn = 0;
     	
     	//Hunting Mode  mode == 0
-    	//除了Targeting Mode之外都处于Hunting Mode
+    	if (mode == 0) {
+    		if (turn == 0) {
+    			thisGuess.row = 0;
+    			thisGuess.column = 0;
+    		}
+    		else {
+    			if(previousGuess.column + 2 <= this.colSize) {
+    				
+    			}
+    			
+    		}
+    		turn++;
+    	}
     	
     	//Targeting Mode mode == 1
-    	//如果上一回合击中但不击沉，直到击沉之前一直都是Targeting Mode
+    	if (mode == 1) {
+    		
+    	}
     	guessList.add(thisGuess);
         // dummy return
         return thisGuess;

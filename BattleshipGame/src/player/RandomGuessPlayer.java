@@ -14,8 +14,8 @@ import ship.Ship;
 public class RandomGuessPlayer implements Player{
 
 	static final int numShips = 5;
-	static final int maxLen = 4;
-	static final int maxWid = 2;
+//	static final int maxLen = 4;
+//	static final int maxWid = 2;
 //	static final int[] rowDeltas = { 1, 0, -1, 0, 1, 0, -1, 0 };
 //	static final int[] clnDeltas = { 0, -1, 0, 1, 1, 0, -1, 0 };
 	int rowSize = 0;
@@ -109,6 +109,7 @@ public class RandomGuessPlayer implements Player{
     @Override
     public void update(Guess guess, Answer answer) {
         // To be implemented.
+    	isguessed[guess.row][guess.column] = true;
     } // end of update()
 
 
