@@ -190,11 +190,11 @@ public class GreedyGuessPlayer  implements Player{
         		Guess targetGuess3 = new Guess();
         		Guess targetGuess4 = new Guess();
         		//insert to list
-        		targetGuess1.row = i-1;
-        		targetGuess1.column=j;
+        		targetGuess1.row = i;
+        		targetGuess1.column=j-1;
         		targetList.add(targetGuess1);
-        		targetGuess2.row = i;
-        		targetGuess2.column = j - 1;
+        		targetGuess2.row = i-1;
+        		targetGuess2.column = j;
         		targetList.add(targetGuess2);
         		targetGuess3.row = i;
         		targetGuess3.column = j + 1;
