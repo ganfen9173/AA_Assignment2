@@ -15,14 +15,9 @@ import world.World.Coordinate;
  * @author Youhan Xia, Jeffrey Chan
  */
 public class GreedyGuessPlayer  implements Player{
-	static final int numShips = 5;
-//	static final int maxLen = 4;
-//	static final int maxWid = 2;
-//	static final int[] rowDeltas = { 1, 0, -1, 0, 1, 0, -1, 0 };
-//	static final int[] clnDeltas = { 0, -1, 0, 1, 1, 0, -1, 0 };
+
 	int rowSize = 0;
 	int colSize = 0;
-	boolean isHex = false;
 	
 	List<Guess> targetList = new ArrayList<Guess>();
 	
@@ -44,19 +39,27 @@ public class GreedyGuessPlayer  implements Player{
 	Guess firstTarget = new Guess();
 	
     boolean isIn(Guess guess) {
-        if (isHex)
-            return guess.row >= 0 && guess.row < rowSize && guess.column >= (guess.row + 1) / 2 && guess.column < colSize + (guess.row + 1) / 2;
-        else
-            return guess.row >= 0 && guess.row < rowSize && guess.column >= 0 && guess.column < colSize;
+    	return guess.row >= 0 && guess.row < rowSize && guess.column >= 0 && guess.column < colSize;
     }
 
+    Guess randomGuess() {
+    	int i = 0,j = 0;
+    	Guess randomGuess = new Guess();
+    	Random random = new Random();
+		while (this.isguessed[i][j]){
+	        i = random.nextInt(this.rowSize);
+	        j = random.nextInt(this.colSize);
+    	}   	
+		randomGuess.row = i;
+		randomGuess.column = j;
+	   	return randomGuess;
+    }
 	
     @Override
     public void initialisePlayer(World world) {
         // To be implemented.
     	this.rowSize = world.numRow;
     	this.colSize = world.numColumn;
-    	this.isHex = world.isHex;
     	this.isguessed = new boolean[this.rowSize][this.colSize + (this.rowSize + 1) / 2];
     	
     	int i = 0;
@@ -117,14 +120,7 @@ public class GreedyGuessPlayer  implements Player{
     	    	int j = lastGuess.column;
     			if(j + 2 > this.colSize-1) {
     				if(i + 1 > this.rowSize-1) {
-    					Random random = new Random();
-    					while (this.isguessed[i][j]){
-    				        i = random.nextInt(this.rowSize);
-    				        j = random.nextInt(this.colSize);
-    			    	}   	
-    				 	thisGuess.row = i;
-    				   	thisGuess.column = j;
-    			    	System.out.println(lastGuess + " 1");
+    					thisGuess = randomGuess();
     				   	return thisGuess;   				   	
     				}
     				else {
@@ -141,14 +137,7 @@ public class GreedyGuessPlayer  implements Player{
         					return thisGuess;
         				} else {
 	        				while(this.isIn(thisGuess)&&isguessed[thisGuess.row][thisGuess.column]) {
-	        					Random random = new Random();
-	        					while (this.isguessed[i][j]){
-	        				        i = random.nextInt(this.rowSize);
-	        				        j = random.nextInt(this.colSize);
-	        			    	}   	
-	        				 	thisGuess.row = i;
-	        				   	thisGuess.column = j;
-	        			    	System.out.println(lastGuess + " 1");
+	        					thisGuess = randomGuess();
 	        				   	return thisGuess;   	
 	        				}
         				}
@@ -157,19 +146,11 @@ public class GreedyGuessPlayer  implements Player{
     			}else{
     				if(!isguessed[i][j+2]&&j+2<this.colSize&&i<this.rowSize) {
     					thisGuess.row = i;
-    					thisGuess.column = j+2;
-    					
+    					thisGuess.column = j+2;    					
     					return thisGuess;
     					}
     				else {
-    					Random random = new Random();
-    					do {
-    				        i = random.nextInt(this.rowSize);
-    				        j = random.nextInt(this.colSize);
-    			    	} while (this.isguessed[i][j]);
-    				 	thisGuess.row = i;
-    				   	thisGuess.column = j;
-    				 
+    					thisGuess = randomGuess();  				 
     				   	return thisGuess;
     				   	
     				}

@@ -13,14 +13,8 @@ import ship.Ship;
  */
 public class RandomGuessPlayer implements Player{
 
-	static final int numShips = 5;
-//	static final int maxLen = 4;
-//	static final int maxWid = 2;
-//	static final int[] rowDeltas = { 1, 0, -1, 0, 1, 0, -1, 0 };
-//	static final int[] clnDeltas = { 0, -1, 0, 1, 1, 0, -1, 0 };
 	int rowSize = 0;
 	int colSize = 0;
-	boolean isHex = false;
 	
 	private class OwnShip{
 		Ship ship = null;
@@ -39,7 +33,6 @@ public class RandomGuessPlayer implements Player{
         // To be implemented.
     	this.rowSize = world.numRow;
     	this.colSize = world.numColumn;
-    	this.isHex = world.isHex;
     	this.isguessed = new boolean[this.rowSize][this.colSize + (this.rowSize + 1) / 2];
     	
     	int i = 0;
@@ -94,9 +87,6 @@ public class RandomGuessPlayer implements Player{
     	do {
           i = random.nextInt(this.rowSize);
           j = random.nextInt(this.colSize);
-          if (this.isHex) {
-            j += (i + 1) / 2;
-          }
         } while (this.isguessed[i][j]);
     	
     	Guess randomGuess = new Guess();
