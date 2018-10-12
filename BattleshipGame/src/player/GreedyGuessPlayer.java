@@ -115,12 +115,14 @@ public class GreedyGuessPlayer  implements Player{
     			if(j + 2 > this.colSize-1) {
     				if(i + 1 > this.rowSize-1) {
     					Random random = new Random();
-    			    	do {
+    					while (this.isguessed[i][j]){
     				        i = random.nextInt(this.rowSize);
     				        j = random.nextInt(this.colSize);
-    			    	} while (this.isguessed[i][j]);    	
+    			    	}   	
     				 	thisGuess.row = i;
     				   	thisGuess.column = j;
+    				   	System.out.println("1"+thisGuess);
+    				   	return thisGuess;   				   	
     				}
     				else {
     					if((i+1) % 2 == 0){
@@ -139,6 +141,8 @@ public class GreedyGuessPlayer  implements Player{
             			    	}        				    	
             				 	thisGuess.row = i;
             				   	thisGuess.column = j;
+            				   	System.out.println("2"+thisGuess);
+            				   	return thisGuess;
         					}
         				}
     				}
@@ -151,14 +155,14 @@ public class GreedyGuessPlayer  implements Player{
     					}
     				else {
     					Random random = new Random();
-    					do{
+    					while (this.isguessed[i][j]){
     				        i = random.nextInt(this.rowSize);
     				        j = random.nextInt(this.colSize);
-    			    	} while (this.isguessed[i][j]);
+    			    	} 
     				    	
     				 	thisGuess.row = i;
     				   	thisGuess.column = j;
-    				   	
+    				   	System.out.println("1"+thisGuess);
     				}
     			} 			
     		}

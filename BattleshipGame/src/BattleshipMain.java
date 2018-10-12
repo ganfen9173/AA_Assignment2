@@ -139,6 +139,7 @@ public class BattleshipMain {
                         // Check whether the guess is valid.
                         if (!world2.updateShot(guess)) {
                             System.err.println("Invalid guess or repeated guess.");
+                            System.out.println(guess);
                             if (logWriter != null) {
                                 logWriter.println("Invalid guess or repeated guess.");
                             }
