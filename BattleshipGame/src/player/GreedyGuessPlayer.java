@@ -27,7 +27,6 @@ public class GreedyGuessPlayer  implements Player{
 	List<Guess> targetList = new ArrayList<Guess>();
 	
 	int mode = 0;
-	boolean initial = true;
 	int turn = 0;
 	
 	private class OwnShip{
@@ -42,6 +41,7 @@ public class GreedyGuessPlayer  implements Player{
 	OwnShip[] ownShips = new OwnShip[5];
 	boolean[][] isguessed;
 	Guess lastGuess = new Guess();
+	Guess firstTarget = new Guess();
 	
     boolean isIn(Guess guess) {
         if (isHex)
@@ -132,10 +132,11 @@ public class GreedyGuessPlayer  implements Player{
         				}
         				if ((i+1) %2 == 1) {
         					j = 1;
-        				}     				
+        				}        				
     				}
     				thisGuess.row = i+1;
     				thisGuess.column =j;
+    				return thisGuess;
     			}else{
     				if(!isguessed[i][j+2]) {
     					thisGuess.row = i;
@@ -151,6 +152,7 @@ public class GreedyGuessPlayer  implements Player{
     				   	thisGuess.column = j;
     				   	System.out.println("random2"+thisGuess);
     				   	return thisGuess;
+    				   	
     				}
     			} 			
     		}
@@ -159,43 +161,47 @@ public class GreedyGuessPlayer  implements Player{
     	
     	//Targeting Mode mode == 1
     	if (mode == 1) {
-    		initial = true;
-    		targetList.add(lastGuess);
-    		int i = lastGuess.row;
-    		int j = lastGuess.column;
-    		//targeting cells in order of bottom, left, up, right
-    		Guess targetGuess1 = new Guess();
-    		Guess targetGuess2 = new Guess();
-    		Guess targetGuess3 = new Guess();
-    		Guess targetGuess4 = new Guess();
-    		//insert to list
-    		targetGuess1.row = i-1;
-    		targetGuess1.column=j;
-    		targetList.add(targetGuess1);
-    		targetGuess2.row = i;
-    		targetGuess2.column = j - 1;
-    		targetList.add(targetGuess2);
-    		targetGuess3.row = i;
-    		targetGuess3.column = j + 1;
-    		targetList.add(targetGuess3);
-    		targetGuess4.row = i+1;
-    		targetGuess4.column = j;
-    		targetList.add(targetGuess4);
-    		int k;
-    		for(k=1;k<targetList.size();k++) {
+    		if (targetList.isEmpty()){
+    			targetList.add(lastGuess);
+    			int i = lastGuess.row;
+    			int j = lastGuess.column;
+    			//targeting cells in order of bottom, left, up, right
+        		Guess targetGuess1 = new Guess();
+        		Guess targetGuess2 = new Guess();
+        		Guess targetGuess3 = new Guess();
+        		Guess targetGuess4 = new Guess();
+        		//insert to list
+        		targetGuess1.row = i-1;
+        		targetGuess1.column=j;
+        		targetList.add(targetGuess1);
+        		targetGuess2.row = i;
+        		targetGuess2.column = j - 1;
+        		targetList.add(targetGuess2);
+        		targetGuess3.row = i;
+        		targetGuess3.column = j + 1;
+        		targetList.add(targetGuess3);
+        		targetGuess4.row = i+1;
+        		targetGuess4.column = j;
+        		targetList.add(targetGuess4);
+    		}
+    		for(int k=1;k<targetList.size();k++) {
     			if(this.isIn(targetList.get(k))) {
-    				if (!isguessed[targetList.get(k).row][targetList.get(k).column]){					
-    					return targetList.get(k);
-    				}
+    				if (!isguessed[targetList.get(k).row][targetList.get(k).column]){
+    					System.out.println("try targeting");
+    					System.out.println("k is" + k);
+    	    			//System.out.println("l is" + l);
+    					thisGuess = targetList.get(k);
+    					return thisGuess;
+    				}	
     			}
-    			if (k==5) {
-        			initial = false;
-        		}
+    			else{
+					continue;
+				}
+    			
     		}
     		
     	}
     	turn++;
-    	lastGuess = thisGuess;
     	//System.out.println(thisGuess);
         return thisGuess;
     } // end of makeGuess()
@@ -207,16 +213,29 @@ public class GreedyGuessPlayer  implements Player{
     	isguessed[guess.row][guess.column] = true;
     	lastGuess = guess;
     	if (answer.isHit) {
+    		System.out.println("now is targeting mode");
     		mode = 1;
     		targetList.clear();
+    		if (answer.shipSunk != null) {
+    			mode = 0;
+    		}
+    		else {
+    			System.out.println("unexpected 3");
+    		}
+    	}
+    	else {
+    		if (mode == 1) {
+    			if (isguessed[targetList.get(targetList.size()-1).row][targetList.get(targetList.size()-1).column]) {
+    				targetList.clear();
+    				mode = 0;
+    			}
+    			else {
+    				lastGuess = targetList.get(0);
+    			}
+    		}
     		
     	}
-    	if (initial == false) {
-    		mode =0;
-    		
-    	}
-    	System.out.println(initial);
-    	System.out.println(mode);
+    	System.out.println("mode is now" + mode);
     } // end of update()
 
 
