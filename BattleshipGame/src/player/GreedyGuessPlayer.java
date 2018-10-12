@@ -2,9 +2,11 @@ package player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import ship.Ship;
 import world.World;
+import world.World.Coordinate;
 
 /**
  * Greedy guess player (task B).
@@ -25,6 +27,7 @@ public class GreedyGuessPlayer  implements Player{
 	List<Guess> guessList = new ArrayList<Guess>();
 	
 	int mode = 0;
+	int turn = 0;
 	
 	private class OwnShip{
 		Ship ship = null;
@@ -37,7 +40,15 @@ public class GreedyGuessPlayer  implements Player{
 	
 	OwnShip[] ownShips = new OwnShip[5];
 	boolean[][] isguessed;
+	Guess lastGuess = new Guess();
 	
+/*    boolean isIn(Guess guess) {
+        if (isHex)
+            return guess.row >= 0 && guess.row < numRow && guess.column >= (guess.row + 1) / 2 && guess.column < numColumn + (guess.row + 1) / 2;
+        else
+            return guess.row >= 0 && guess.row < numRow && guess.column >= 0 && guess.column < numColumn;
+    }*/
+
 	
     @Override
     public void initialisePlayer(World world) {
@@ -90,16 +101,8 @@ public class GreedyGuessPlayer  implements Player{
     @Override
     public Guess makeGuess() {
         // To be implemented.
-    	Guess previousGuess = new Guess();
-    	if (guessList.size() != 0) {
-    		previousGuess = guessList.get(guessList.size() - 1);
-    		return previousGuess;
-    	} 
-    	
-    	Guess thisGuess = new Guess();
-  	
-    	int turn = 0;
-    	
+ 	
+    	Guess thisGuess = new Guess();    	
     	//Hunting Mode  mode == 0
     	if (mode == 0) {
     		if (turn == 0) {
@@ -107,20 +110,67 @@ public class GreedyGuessPlayer  implements Player{
     			thisGuess.column = 0;
     		}
     		else {
-    			if(previousGuess.column + 2 <= this.colSize) {
-    				
-    			}
-    			
+    			int i = lastGuess.row;
+    	    	int j = lastGuess.column;
+    			if(j + 2 > this.colSize-1) {
+    				if(i + 1 > this.rowSize-1) {
+    					Random random = new Random();
+    			    	do {
+    				        i = random.nextInt(this.rowSize);
+    				        j = random.nextInt(this.colSize);
+    			    	} while (this.isguessed[i][j]);    	
+    				 	thisGuess.row = i;
+    				   	thisGuess.column = j;
+    				}
+    				else {
+    					if((i+1) % 2 == 0){
+        					j = 0;
+        				}
+        				if ((i+1) %2 == 1) {
+        					j = 1; 					
+        				}
+        				while (isguessed[i+1][j]){
+        					j = j+ 1;
+        					if(j==this.colSize) {
+        						Random random = new Random();
+        						while (this.isguessed[i][j]){
+            				        i = random.nextInt(this.rowSize);
+            				        j = random.nextInt(this.colSize);
+            			    	}        				    	
+            				 	thisGuess.row = i;
+            				   	thisGuess.column = j;
+        					}
+        				}
+    				}
+    				thisGuess.row = i+1;
+    				thisGuess.column =j;
+    			}else{
+    				if(!isguessed[i][j+2]) {
+    					thisGuess.row = i;
+    					thisGuess.column = j+2;
+    					}
+    				else {
+    					Random random = new Random();
+    					do{
+    				        i = random.nextInt(this.rowSize);
+    				        j = random.nextInt(this.colSize);
+    			    	} while (this.isguessed[i][j]);
+    				    	
+    				 	thisGuess.row = i;
+    				   	thisGuess.column = j;
+    				   	
+    				}
+    			} 			
     		}
-    		turn++;
+    		
     	}
     	
     	//Targeting Mode mode == 1
-    	if (mode == 1) {
-    		
+    	if (mode == 1) {    		
     	}
-    	guessList.add(thisGuess);
-        // dummy return
+    	turn++;
+    	lastGuess = thisGuess;
+    	//System.out.println(thisGuess);
         return thisGuess;
     } // end of makeGuess()
 
@@ -128,6 +178,8 @@ public class GreedyGuessPlayer  implements Player{
     @Override
     public void update(Guess guess, Answer answer) {
         // To be implemented.
+    	isguessed[guess.row][guess.column] = true;
+    	lastGuess = guess;
     } // end of update()
 
 
