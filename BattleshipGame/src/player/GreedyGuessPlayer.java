@@ -24,9 +24,10 @@ public class GreedyGuessPlayer  implements Player{
 	int colSize = 0;
 	boolean isHex = false;
 	
-	List<Guess> guessList = new ArrayList<Guess>();
+	List<Guess> targetList = new ArrayList<Guess>();
 	
 	int mode = 0;
+	boolean initial = true;
 	int turn = 0;
 	
 	private class OwnShip{
@@ -42,12 +43,12 @@ public class GreedyGuessPlayer  implements Player{
 	boolean[][] isguessed;
 	Guess lastGuess = new Guess();
 	
-/*    boolean isIn(Guess guess) {
+    boolean isIn(Guess guess) {
         if (isHex)
-            return guess.row >= 0 && guess.row < numRow && guess.column >= (guess.row + 1) / 2 && guess.column < numColumn + (guess.row + 1) / 2;
+            return guess.row >= 0 && guess.row < rowSize && guess.column >= (guess.row + 1) / 2 && guess.column < colSize + (guess.row + 1) / 2;
         else
-            return guess.row >= 0 && guess.row < numRow && guess.column >= 0 && guess.column < numColumn;
-    }*/
+            return guess.row >= 0 && guess.row < rowSize && guess.column >= 0 && guess.column < colSize;
+    }
 
 	
     @Override
@@ -121,30 +122,17 @@ public class GreedyGuessPlayer  implements Player{
     			    	}   	
     				 	thisGuess.row = i;
     				   	thisGuess.column = j;
-    				   	System.out.println("1"+thisGuess);
+    				   	System.out.println("random1"+thisGuess);
     				   	return thisGuess;   				   	
     				}
     				else {
+    					System.out.println(lastGuess);
     					if((i+1) % 2 == 0){
-        					j = 0;
+        					j = 0;	
         				}
         				if ((i+1) %2 == 1) {
-        					j = 1; 					
-        				}
-        				while (isguessed[i+1][j]){
-        					j = j+ 1;
-        					if(j==this.colSize) {
-        						Random random = new Random();
-        						while (this.isguessed[i][j]){
-            				        i = random.nextInt(this.rowSize);
-            				        j = random.nextInt(this.colSize);
-            			    	}        				    	
-            				 	thisGuess.row = i;
-            				   	thisGuess.column = j;
-            				   	System.out.println("2"+thisGuess);
-            				   	return thisGuess;
-        					}
-        				}
+        					j = 1;
+        				}     				
     				}
     				thisGuess.row = i+1;
     				thisGuess.column =j;
@@ -155,14 +143,14 @@ public class GreedyGuessPlayer  implements Player{
     					}
     				else {
     					Random random = new Random();
-    					while (this.isguessed[i][j]){
+    					do {
     				        i = random.nextInt(this.rowSize);
     				        j = random.nextInt(this.colSize);
-    			    	} 
-    				    	
+    			    	} while (this.isguessed[i][j]);
     				 	thisGuess.row = i;
     				   	thisGuess.column = j;
-    				   	System.out.println("1"+thisGuess);
+    				   	System.out.println("random2"+thisGuess);
+    				   	return thisGuess;
     				}
     			} 			
     		}
@@ -171,6 +159,39 @@ public class GreedyGuessPlayer  implements Player{
     	
     	//Targeting Mode mode == 1
     	if (mode == 1) {
+    		initial = true;
+    		targetList.add(lastGuess);
+    		int i = lastGuess.row;
+    		int j = lastGuess.column;
+    		//targeting cells in order of bottom, left, up, right
+    		Guess targetGuess1 = new Guess();
+    		Guess targetGuess2 = new Guess();
+    		Guess targetGuess3 = new Guess();
+    		Guess targetGuess4 = new Guess();
+    		//insert to list
+    		targetGuess1.row = i-1;
+    		targetGuess1.column=j;
+    		targetList.add(targetGuess1);
+    		targetGuess2.row = i;
+    		targetGuess2.column = j - 1;
+    		targetList.add(targetGuess2);
+    		targetGuess3.row = i;
+    		targetGuess3.column = j + 1;
+    		targetList.add(targetGuess3);
+    		targetGuess4.row = i+1;
+    		targetGuess4.column = j;
+    		targetList.add(targetGuess4);
+    		int k;
+    		for(k=1;k<targetList.size();k++) {
+    			if(this.isIn(targetList.get(k))) {
+    				if (!isguessed[targetList.get(k).row][targetList.get(k).column]){					
+    					return targetList.get(k);
+    				}
+    			}
+    			if (k==5) {
+        			initial = false;
+        		}
+    		}
     		
     	}
     	turn++;
@@ -185,6 +206,17 @@ public class GreedyGuessPlayer  implements Player{
         // To be implemented.
     	isguessed[guess.row][guess.column] = true;
     	lastGuess = guess;
+    	if (answer.isHit) {
+    		mode = 1;
+    		targetList.clear();
+    		
+    	}
+    	if (initial == false) {
+    		mode =0;
+    		
+    	}
+    	System.out.println(initial);
+    	System.out.println(mode);
     } // end of update()
 
 
