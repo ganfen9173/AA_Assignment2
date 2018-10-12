@@ -170,7 +170,8 @@ public class GreedyGuessPlayer  implements Player{
     	}
     	
     	//Targeting Mode mode == 1
-    	if (mode == 1) {    		
+    	if (mode == 1) {
+    		
     	}
     	turn++;
     	lastGuess = thisGuess;
