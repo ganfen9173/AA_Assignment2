@@ -83,7 +83,6 @@ public class GreedyGuessPlayer  implements Player{
     						x = 0;
     					}
     				}
-    				System.out.println(ownShips.get(i).isdown);
     				
     				if (x != 0) {
     					answer.shipSunk = ownShips.get(i).ship;
