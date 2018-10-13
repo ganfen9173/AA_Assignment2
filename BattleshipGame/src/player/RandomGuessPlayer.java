@@ -56,23 +56,24 @@ public class RandomGuessPlayer implements Player{
 
     @Override
     public Answer getAnswer(Guess guess) {
-        // To be implemented.
     	Answer answer = new Answer();
     	for (int i = 0; i < ownShips.size(); i++) {
-    		for (int j = 0;j <ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); j++) {
+    		for (int j = 0;j < ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); j++) {
     			if ((guess.row == ownShips.get(i).rowCdns.get(j)) && (guess.column == ownShips.get(i).colCdns.get(j))) {
     				answer.isHit = true;
-    				ownShips.get(i).isdown.set(j, true) ;
-    
+    				ownShips.get(i).isdown.set(j, true);
+
     				int x = 1;
     				for (int y = 0;y < ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); y++) {
-    					if (ownShips.get(i).isdown.get(j) == false) {
+    					if (!ownShips.get(i).isdown.get(y)) {
+
     						x = 0;
     					}
     				}
     				
     				if (x != 0) {
     					answer.shipSunk = ownShips.get(i).ship;
+    					System.out.println("Ship is sunk");
     				}
     				return answer;
     			}
