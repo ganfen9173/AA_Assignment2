@@ -1,6 +1,7 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -17,8 +18,6 @@ import world.World;
 public class ProbabilisticGuessPlayer  implements Player{
 	int rowSize = 0;
 	int colSize = 0;
-	
-	List<Guess> targetList = new ArrayList<Guess>();
 	
 	int mode = 0;
 	int turn = 0;
@@ -38,6 +37,8 @@ public class ProbabilisticGuessPlayer  implements Player{
 	Guess lastGuess = new Guess();
 	Guess firstTarget = new Guess();
 	List<String> targetShips = new ArrayList<String>();
+	List<Guess> targetList = new ArrayList<Guess>();
+	HashMap<Guess,Boolean> targetMap = new HashMap<Guess,Boolean>();
 	
 	boolean isIn(Guess guess, int outter) {
     	return guess.row >= outter && guess.row < rowSize-outter && guess.column >= outter && guess.column < colSize-outter;
@@ -141,8 +142,41 @@ public class ProbabilisticGuessPlayer  implements Player{
         	}
     		
     	}
+    	if (mode == 1) {
+    		int i = lastGuess.row;
+			int j = lastGuess.column;
+			//targeting cells in order of bottom, left, up, right
+    		Guess targetGuess1 = new Guess();
+    		Guess targetGuess2 = new Guess();
+    		Guess targetGuess3 = new Guess();
+    		Guess targetGuess4 = new Guess();
+    		//insert to list
+    		targetGuess1.row = i;
+    		targetGuess1.column = j - 1;
+    		targetList.add(targetGuess1);
+    		targetGuess2.row = i - 1;
+    		targetGuess2.column = j;
+    		targetList.add(targetGuess2);
+    		targetGuess3.row = i;
+    		targetGuess3.column = j + 1;
+    		targetList.add(targetGuess3);
+    		targetGuess4.row = i + 1;
+    		targetGuess4.column = j;
+    		targetList.add(targetGuess4);
+    		for(int k=1;k<targetList.size();k++) {
+    			if(this.isIn(targetList.get(k),0)) {
+    				if (!isguessed[targetList.get(k).row][targetList.get(k).column]){
+    					thisGuess = targetList.get(k);
+    					
+    					return thisGuess;
+    				}	
+    			}
+    			else{
+					continue;
+				}   			
+    		}
     		
-    	
+    	}
         // dummy return
         return null;
     } // end of makeGuess()
@@ -153,6 +187,39 @@ public class ProbabilisticGuessPlayer  implements Player{
         // To be implemented.
     	isguessed[guess.row][guess.column] = true;
     	lastGuess = guess;
+    	if (answer.isHit) {
+
+    		mode=1;
+    		targetList.clear();
+    		if(answer.shipSunk !=null) {
+    			System.out.println("Change to Hunting Mode");
+    			mode = 0;
+    		}
+    	}
+    	else {
+    		if (mode == 1) {
+    			Guess guess1 = new Guess();
+    			guess1.row = targetList.get(targetList.size()-1).row;
+    			guess1.column = targetList.get(targetList.size()-1).column;
+    			Guess guess2 = new Guess();
+    			guess2.row = targetList.get(targetList.size()-2).row;
+    			guess2.column = targetList.get(targetList.size()-2).column;
+    			if (isIn(guess1,0) && isguessed[targetList.get(targetList.size()-1).row][targetList.get(targetList.size()-1).column]) {
+    				targetList.clear();
+    				mode = 0;
+    			} else if (!isIn(guess1,0) && isguessed[targetList.get(targetList.size()-2).row][targetList.get(targetList.size()-2).column]) {
+    				targetList.clear();
+    				mode = 0;
+    			} else if (!isIn(guess1,0) && !isIn(guess1,0) && isguessed[targetList.get(targetList.size()-3).row][targetList.get(targetList.size()-3).column]) {
+    				targetList.clear();
+    				mode = 0;
+    			}
+    			else {
+    				lastGuess = targetList.get(0);
+
+    			}
+    		}
+    	}
     } // end of update()
 
 
