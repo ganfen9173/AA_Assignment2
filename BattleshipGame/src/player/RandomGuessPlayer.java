@@ -1,5 +1,7 @@
 package player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import world.World;
@@ -18,16 +20,16 @@ public class RandomGuessPlayer implements Player{
 	
 	private class OwnShip{
 		Ship ship = null;
-	    int[] rowCdns = { -1, -1, -1, -1, -1, -1, -1, -1 };
-	    int[] colCdns = { -1, -1, -1, -1, -1, -1, -1, -1 };
-	    boolean[] isdown = { true, true, true, true, true, true, true, true};
+	    ArrayList<Integer> rowCdns = new ArrayList<Integer>();
+	    ArrayList<Integer> colCdns = new ArrayList<Integer>();
+	    ArrayList<Boolean> isdown = new ArrayList<Boolean>();
 	    
 	    private OwnShip() {}
 	}
 	
-	OwnShip[] ownShips = new OwnShip[5];
 	boolean[][] isguessed;
-	
+	ArrayList<OwnShip> ownShips = new ArrayList<OwnShip>();
+
 	
     public void initialisePlayer(World world) {
         // To be implemented.
@@ -38,12 +40,14 @@ public class RandomGuessPlayer implements Player{
     	int i = 0;
     	
     	for (World.ShipLocation localShipLocation : world.shipLocations) {
-    		this.ownShips[i] = new OwnShip();
-    	    this.ownShips[i].ship = localShipLocation.ship;
-    	    for (int j = 0; j < this.ownShips[i].ship.len() * this.ownShips[i].ship.width(); j++) {
-    	    	this.ownShips[i].rowCdns[j] = ((World.Coordinate)localShipLocation.coordinates.get(j)).row;
-    	    	this.ownShips[i].colCdns[j] = ((World.Coordinate)localShipLocation.coordinates.get(j)).column;
-    	    	this.ownShips[i].isdown[j] = false;
+    		OwnShip ship = new OwnShip();
+    		ship.ship =  localShipLocation.ship;
+    	    ownShips.add(ship);
+    	    
+    	    for (int j = 0; j < ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); j++) {
+    	    	ownShips.get(i).rowCdns.add(((World.Coordinate)localShipLocation.coordinates.get(j)).row);
+    	    	ownShips.get(i).colCdns.add(((World.Coordinate)localShipLocation.coordinates.get(j)).column);
+    	    	ownShips.get(i).isdown.add(false);
     	    }
     	      	i++;
     	}
@@ -54,20 +58,20 @@ public class RandomGuessPlayer implements Player{
     public Answer getAnswer(Guess guess) {
         // To be implemented.
     	Answer answer = new Answer();
-    	for (int i = 0; i < 5; i++) {
-    		for (int j = 0;j < this.ownShips[i].ship.len() * this.ownShips[i].ship.width(); j++) {
-    			if ((guess.row == this.ownShips[i].rowCdns[j]) && (guess.column == this.ownShips[i].colCdns[j])) {
+    	for (int i = 0; i < ownShips.size(); i++) {
+    		for (int j = 0;j <ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); j++) {
+    			if ((guess.row == ownShips.get(i).rowCdns.get(j)) && (guess.column == ownShips.get(i).colCdns.get(j))) {
     				answer.isHit = true;
-    				this.ownShips[i].isdown[j] = true;
+    				ownShips.get(i).isdown.get(j).equals(true) ;
     				int x = 1;
-    				for (int y = 0;y < this.ownShips[i].ship.len() * this.ownShips[i].ship.width(); y++) {
-    					if (this.ownShips[i].isdown[y] == false) {
+    				for (int y = 0;y < ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); y++) {
+    					if (ownShips.get(i).isdown.get(j) == false) {
     						x = 0;
     					}
     				}
     				
     				if (x != 0) {
-    					answer.shipSunk = this.ownShips[i].ship;
+    					answer.shipSunk = ownShips.get(i).ship;
     				}
     				return answer;
     			}
@@ -106,9 +110,9 @@ public class RandomGuessPlayer implements Player{
     @Override
     public boolean noRemainingShips() {
         // To be implemented.
-    	for (int i = 0; i < 5; i++) {
-    		for (int j = 0; j < this.ownShips[i].ship.len() * this.ownShips[i].ship.width(); j++) {
-    			if (!this.ownShips[i].isdown[j]) {
+    	for (int i = 0; i < ownShips.size(); i++) {
+    		for (int j = 0; j < ownShips.get(i).ship.len() * ownShips.get(i).ship.width(); j++) {
+    			if (!(ownShips.get(i).isdown.get(j))) {
     				return false;
     	        }
     		}
@@ -118,3 +122,4 @@ public class RandomGuessPlayer implements Player{
     // end of noRemainingShips()
 
 } // end of class RandomGuessPlayer
+
