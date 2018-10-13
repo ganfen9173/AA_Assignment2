@@ -86,7 +86,6 @@ public class GreedyGuessPlayer  implements Player{
     				
     				if (x != 0) {
     					answer.shipSunk = ownShips.get(i).ship;
-    					System.out.println("Ship is sunk");
     				}
     				return answer;
     			}
@@ -121,7 +120,6 @@ public class GreedyGuessPlayer  implements Player{
     			    	}   	
     				 	thisGuess.row = i;
     				   	thisGuess.column = j;
-    			    	System.out.println(lastGuess + " 1");
     				   	return thisGuess;   				   	
     				}
     				else {
@@ -145,7 +143,6 @@ public class GreedyGuessPlayer  implements Player{
 	        			    	}   	
 	        				 	thisGuess.row = i;
 	        				   	thisGuess.column = j;
-	        			    	System.out.println(lastGuess + " 1");
 	        				   	return thisGuess;   	
 	        				}
         				}
@@ -228,7 +225,6 @@ public class GreedyGuessPlayer  implements Player{
     		mode = 1;
     		targetList.clear();
     		if (answer.shipSunk != null) {
-    			System.out.println("Change to Hunting Mode");
     			mode = 0;
     		}   		
     	}
